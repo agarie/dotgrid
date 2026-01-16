@@ -30,7 +30,7 @@
     opacity: <input id="dgray" type="number" min="0.1" max="1.0" step="0.1" value="0.5"/>
 </div>
 <div>
-  <strong>Vertical line column:</strong> <input id="linecol" type="number" min="1" value="0" style="width:40px"/>
+  <strong>Vertical line position (% from right):</strong> <input id="linecol" type="text" value="30" style="width:40px"/>%
 </div>
 <div>
   <strong>Include page number box</strong> <input id="showrect" type="checkbox" checked="checked"/>
@@ -173,8 +173,8 @@ f
     t += "0 G\n"
     t += rectX + " " + rectY + " " + rectWidth + " " + rectHeight + " re s\n"
   }
-  if (linecol > 0) {
-    colIndex = linecol - 1
+  if (linecol > 0 && linecol < 100) {
+    colIndex = Math.trunc(hdots * (1 - linecol / 100)) - 1
     lineX = hoffset + spacing * colIndex - radius
     lineY = voffset
     lineWidth = radius * 2
@@ -216,7 +216,7 @@ function updateValue() {
     break;
   }
   twosided = document.getElementById("twosided").checked
-  linecol = parseInt(document.getElementById("linecol").value)
+  linecol = parseFloat(document.getElementById("linecol").value) || 0
   showrect = document.getElementById("showrect").checked
   if (twosided) {
     t = twoSidedPdf(ml, mr, mt, mb,
