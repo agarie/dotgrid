@@ -30,7 +30,13 @@
     opacity: <input id="dgray" type="number" min="0.1" max="1.0" step="0.1" value="0.5"/>
 </div>
 <div>
-  <strong>Mirrored second page</strong> <input id="twosided" type="checkbox"/>
+  <strong>Vertical line column:</strong> <input id="linecol" type="number" min="1" value="0" style="width:40px"/>
+</div>
+<div>
+  <strong>Include page number box</strong> <input id="showrect" type="checkbox" checked="checked"/>
+</div>
+<div>
+<strong>Mirrored second page</strong> <input id="twosided" type="checkbox"/>
 
 <div>
 <a id="download" download="dotgrid.pdf">Download</a>
@@ -42,7 +48,7 @@
 
 <script>
 
-function pdf(mleft, mright, mtop, mbot, width, height, gray, radius, spacing) {
+function pdf(mleft, mright, mtop, mbot, width, height, gray, radius, spacing, linecol, showrect) {
   t = `%PDF-1.2 
 1 0 obj
 <<
@@ -73,15 +79,16 @@ endobj
   vspace = height - mtop - mbot
   voffset = mbot + (vspace % spacing / 2)
   vdots = Math.trunc(vspace / spacing) + 1
-  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots)
+  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, showrect)
   t += `endobj
-trailer
+  trailer
 <</Root 1 0 R>>
 %%EOF
-`
+ `
   return t
 }
-function twoSidedPdf(mleft, mright, mtop, mbot, width, height, gray, radius, spacing) {
+
+function twoSidedPdf(mleft, mright, mtop, mbot, width, height, gray, radius, spacing, linecol, showrect) {
   t = `%PDF-1.2 
 1 0 obj
 <<
@@ -112,9 +119,9 @@ endobj
   vspace = height - mtop - mbot
   voffset = mbot + (vspace % spacing / 2)
   vdots = Math.trunc(vspace / spacing) + 1
-  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots)
+  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, showrect)
   t += `endobj
-5 0 obj
+ 5 0 obj
 <<
 /Type /Page
 /Parent 2 0 R
@@ -122,18 +129,18 @@ endobj
 >>
 endobj
 6 0 obj << >>
-`
+ `
   hoffset = mright + (hspace % spacing / 2)
-  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots)
+  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, showrect)
   t += `endobj 
-trailer
+  trailer
 <</Root 1 0 R>>
 %%EOF
-`
+ `
   return t
 }
 
-function dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots) {
+function dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, showrect) {
   t = `stream
 q
 ${gray} g
@@ -156,9 +163,28 @@ f
       t += "Q\n"
     }
   }
+  if (showrect) {
+    rectWidth = 20
+    rectHeight = 10
+    rectX = width - rectWidth - 5
+    rectY = height - rectHeight - 5
+    t += "1 g\n"
+    t += rectX + " " + rectY + " " + rectWidth + " " + rectHeight + " re f\n"
+    t += "0 G\n"
+    t += rectX + " " + rectY + " " + rectWidth + " " + rectHeight + " re s\n"
+  }
+  if (linecol > 0) {
+    colIndex = linecol - 1
+    lineX = hoffset + spacing * colIndex - radius
+    lineY = voffset
+    lineWidth = radius * 2
+    lineHeight = spacing * (vdots - 1)
+    t += "0 g\n"
+    t += lineX + " " + lineY + " " + lineWidth + " " + lineHeight + " re f\n"
+  }
   t += `Q
-endstream
-`
+ endstream
+ `
   return t
 }
 
@@ -190,14 +216,16 @@ function updateValue() {
     break;
   }
   twosided = document.getElementById("twosided").checked
+  linecol = parseInt(document.getElementById("linecol").value)
+  showrect = document.getElementById("showrect").checked
   if (twosided) {
     t = twoSidedPdf(ml, mr, mt, mb,
             width, height,
-            dgray, dsize, dspace)
+            dgray, dsize, dspace, linecol, showrect)
   } else {
     t = pdf(ml, mr, mt, mb,
             width, height,
-            dgray, dsize, dspace)
+            dgray, dsize, dspace, linecol, showrect)
   }
   document.getElementById("download").setAttribute("href",
     "data:text/plain;charset=utf-8," + encodeURIComponent(t))
@@ -206,7 +234,7 @@ function updateValue() {
 let inputs = ["paper", "units",
               "marginL", "marginR", "marginT", "marginB",
               "dsize", "dspace", "dgray",
-              "twosided"]
+              "twosided", "linecol", "showrect"]
 for (let i = 0; i < inputs.length; ++i) {
   const input = document.getElementById(inputs[i]);
   input.addEventListener("change", updateValue);
