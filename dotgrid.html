@@ -3,9 +3,9 @@
 <div>
   <strong>Output:</strong>
   <select id="paper">
-    <option value="a4">A4</option>
+    <option value="a4" selected="selected">A4</option>
     <option value="a5">A5</option>
-    <option value="letter" selected="selected">US Letter</option>
+    <option value="letter">US Letter</option>
     <option value="halfletter">Half Letter</option>
   </select>
 </div>
@@ -18,22 +18,22 @@
 </div>
 <div>
   <strong>Margin</strong>
-  left: <input id="marginL" type="text" maxlength="5" value="5" style="width:30px"/>
-  top: <input id="marginT" type="text" maxlength="5" value="5" style="width:30px"/>
-  right: <input id="marginR" type="text" maxlength="5" value="5" style="width:30px"/>
-  bottom: <input id="marginB" type="text" maxlength="5" value="5" style="width:30px"/>
+  left: <input id="marginL" type="text" maxlength="5" value="16" style="width:30px"/>
+  top: <input id="marginT" type="text" maxlength="5" value="18" style="width:30px"/>
+  right: <input id="marginR" type="text" maxlength="5" value="8" style="width:30px"/>
+  bottom: <input id="marginB" type="text" maxlength="5" value="8" style="width:30px"/>
 </div>
 <div>
   <strong>Dot</strong>
     size: <input id="dsize" type="text" maxlength="5" value="0.25" style="width:60px"/>
-    spacing: <input id="dspace" type="text" maxlength="5" value="5" style="width:60px"/>
+    spacing: <input id="dspace" type="text" maxlength="5" value="7" style="width:60px"/>
     opacity: <input id="dgray" type="number" min="0.1" max="1.0" step="0.1" value="0.5"/>
 </div>
 <div>
-  <strong>Vertical line position (% from right):</strong> <input id="linecol" type="number" min="0" max="100" value="30" style="width:40px"/>%
+  <strong>Vertical line position (% from right):</strong> <input id="linecol" type="number" min="0" max="100" value="20" style="width:40px"/>%
 </div>
 <div>
-  <strong>Include page number box</strong> <input id="showrect" type="checkbox" checked="checked"/>
+  <strong>Include page number line</strong> <input id="showrect" type="checkbox" checked="checked"/>
 </div>
 <div>
 <strong>Mirrored second page</strong> <input id="twosided" type="checkbox"/>
@@ -47,9 +47,8 @@
 </div>
 
 <script>
-
 function pdf(mleft, mright, mtop, mbot, width, height, gray, radius, spacing, linecol, showrect) {
-  t = `%PDF-1.2 
+  t = `%PDF-1.2
 1 0 obj
 <<
 /Pages 2 0 R
@@ -89,7 +88,7 @@ endobj
 }
 
 function twoSidedPdf(mleft, mright, mtop, mbot, width, height, gray, radius, spacing, linecol, showrect) {
-  t = `%PDF-1.2 
+  t = `%PDF-1.2
 1 0 obj
 <<
 /Pages 2 0 R
@@ -132,7 +131,7 @@ endobj
  `
   hoffset = mright + (hspace % spacing / 2)
   t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, showrect)
-  t += `endobj 
+  t += `endobj
   trailer
 <</Root 1 0 R>>
 %%EOF
@@ -241,7 +240,6 @@ for (let i = 0; i < inputs.length; ++i) {
 }
 
 updateValue()
-
 </script>
 </body>
 </html>
