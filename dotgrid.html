@@ -78,7 +78,10 @@ endobj
   vspace = height - mtop - mbot
   voffset = mbot + (vspace % spacing / 2)
   vdots = Math.trunc(vspace / spacing) + 1
-  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum)
+
+  pagenum_line = pagenumLine(pagenum, width, mright, height, mtop, spacing, radius)
+
+  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum_line)
   t += `endobj
   trailer
 <</Root 1 0 R>>
@@ -118,7 +121,10 @@ endobj
   vspace = height - mtop - mbot
   voffset = mbot + (vspace % spacing / 2)
   vdots = Math.trunc(vspace / spacing) + 1
-  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum)
+
+  pagenum_line = pagenumLine(width, mright, height, mtop, spacing, radius)
+
+  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum_line)
   t += `endobj
  5 0 obj
 <<
@@ -130,7 +136,7 @@ endobj
 6 0 obj << >>
  `
   hoffset = mright + (hspace % spacing / 2)
-  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum)
+  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum_line)
   t += `endobj
   trailer
 <</Root 1 0 R>>
@@ -139,7 +145,7 @@ endobj
   return t
 }
 
-function dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum) {
+function dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum_line) {
   t = `stream
 q
 ${gray} g
@@ -162,15 +168,8 @@ f
       t += "Q\n"
     }
   }
-  if (pagenum) {
-    rectWidth = 20
-    rectHeight = 10
-    rectX = width - rectWidth - 5
-    rectY = height - rectHeight - 5
-    t += "1 g\n"
-    t += rectX + " " + rectY + " " + rectWidth + " " + rectHeight + " re f\n"
-    t += "0 G\n"
-    t += rectX + " " + rectY + " " + rectWidth + " " + rectHeight + " re s\n"
+  if (pagenum_line) {
+    t += pagenum_line
   }
   if (linecol > 0 && linecol < 100) {
     colIndex = Math.trunc(hdots * (1 - linecol / 100)) - 1
@@ -185,6 +184,21 @@ f
  endstream
  `
   return t
+}
+
+function pagenumLine(pagenum, width, mright, height, mtop, spacing, radius) {
+  // These values are hardcoded but could, in theory, be available on the UI.
+  lineWidth = 50
+  lineHeight = radius * 2
+
+  lineX = width - mright - lineWidth - spacing
+  lineY = height - mtop
+
+  if (pagenum) {
+    return "0 g\n" + lineX + " " + lineY + " " + lineWidth + " " + lineHeight + " re f\n"
+  } else {
+    return false
+  }
 }
 
 function updateValue() {
