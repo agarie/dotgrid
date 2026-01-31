@@ -33,7 +33,7 @@
   <strong>Vertical line position (% from right):</strong> <input id="linecol" type="number" min="0" max="100" value="20" style="width:40px"/>%
 </div>
 <div>
-  <strong>Include page number line</strong> <input id="showrect" type="checkbox" checked="checked"/>
+  <strong>Include page number field</strong> <input id="pagenum" type="checkbox" checked="checked"/>
 </div>
 <div>
 <strong>Mirrored second page</strong> <input id="twosided" type="checkbox"/>
@@ -47,7 +47,7 @@
 </div>
 
 <script>
-function pdf(mleft, mright, mtop, mbot, width, height, gray, radius, spacing, linecol, showrect) {
+function pdf(mleft, mright, mtop, mbot, width, height, gray, radius, spacing, linecol, pagenum) {
   t = `%PDF-1.2
 1 0 obj
 <<
@@ -78,7 +78,7 @@ endobj
   vspace = height - mtop - mbot
   voffset = mbot + (vspace % spacing / 2)
   vdots = Math.trunc(vspace / spacing) + 1
-  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, showrect)
+  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum)
   t += `endobj
   trailer
 <</Root 1 0 R>>
@@ -87,7 +87,7 @@ endobj
   return t
 }
 
-function twoSidedPdf(mleft, mright, mtop, mbot, width, height, gray, radius, spacing, linecol, showrect) {
+function twoSidedPdf(mleft, mright, mtop, mbot, width, height, gray, radius, spacing, linecol, pagenum) {
   t = `%PDF-1.2
 1 0 obj
 <<
@@ -118,7 +118,7 @@ endobj
   vspace = height - mtop - mbot
   voffset = mbot + (vspace % spacing / 2)
   vdots = Math.trunc(vspace / spacing) + 1
-  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, showrect)
+  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum)
   t += `endobj
  5 0 obj
 <<
@@ -130,7 +130,7 @@ endobj
 6 0 obj << >>
  `
   hoffset = mright + (hspace % spacing / 2)
-  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, showrect)
+  t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum)
   t += `endobj
   trailer
 <</Root 1 0 R>>
@@ -139,7 +139,7 @@ endobj
   return t
 }
 
-function dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, showrect) {
+function dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum) {
   t = `stream
 q
 ${gray} g
@@ -162,7 +162,7 @@ f
       t += "Q\n"
     }
   }
-  if (showrect) {
+  if (pagenum) {
     rectWidth = 20
     rectHeight = 10
     rectX = width - rectWidth - 5
@@ -216,15 +216,15 @@ function updateValue() {
   }
   twosided = document.getElementById("twosided").checked
   linecol = Math.min(100, Math.max(0, parseFloat(document.getElementById("linecol").value) || 0))
-  showrect = document.getElementById("showrect").checked
+  pagenum = document.getElementById("pagenum").checked
   if (twosided) {
     t = twoSidedPdf(ml, mr, mt, mb,
             width, height,
-            dgray, dsize, dspace, linecol, showrect)
+            dgray, dsize, dspace, linecol, pagenum)
   } else {
     t = pdf(ml, mr, mt, mb,
             width, height,
-            dgray, dsize, dspace, linecol, showrect)
+            dgray, dsize, dspace, linecol, pagenum)
   }
   document.getElementById("download").setAttribute("href",
     "data:text/plain;charset=utf-8," + encodeURIComponent(t))
@@ -233,7 +233,7 @@ function updateValue() {
 let inputs = ["paper", "units",
               "marginL", "marginR", "marginT", "marginB",
               "dsize", "dspace", "dgray",
-              "twosided", "linecol", "showrect"]
+              "twosided", "linecol", "pagenum"]
 for (let i = 0; i < inputs.length; ++i) {
   const input = document.getElementById(inputs[i]);
   input.addEventListener("change", updateValue);
