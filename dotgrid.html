@@ -79,7 +79,7 @@ endobj
   voffset = mbot + (vspace % spacing / 2)
   vdots = Math.trunc(vspace / spacing) + 1
 
-  pagenum_line = pagenumLine(pagenum, width, mleft, mright, height, mtop, spacing, radius)
+  pagenum_line = pagenumLine(pagenum, width, height, mtop, spacing, radius)
 
   t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum_line)
   t += `endobj
@@ -122,7 +122,7 @@ endobj
   voffset = mbot + (vspace % spacing / 2)
   vdots = Math.trunc(vspace / spacing) + 1
 
-  pagenum_line = pagenumLine(pagenum, width, mleft, mright, height, mtop, spacing, radius)
+  pagenum_line = pagenumLine(pagenum, width, height, mtop, spacing, radius)
 
   t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum_line)
   t += `endobj
@@ -186,14 +186,11 @@ f
   return t
 }
 
-function pagenumLine(pagenum, width, mleft, mright, height, mtop, spacing, radius) {
+function pagenumLine(pagenum, width, height, mtop, spacing, radius) {
   // These values are hardcoded but could, in theory, be available on the UI.
   lineWidth = 50
   lineHeight = radius * 2
-
-  hspace = width - mleft - mright
-  lineX = width - mright - (hspace % spacing / 2) + radius - lineWidth
-
+  lineX = width - lineWidth - spacing
   lineY = height - mtop + (spacing / 2)
 
   if (pagenum) {
