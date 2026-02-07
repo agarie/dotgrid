@@ -1,77 +1,169 @@
 <html>
+<head>
+<style>
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem;
+}
+
+form {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 480px;
+}
+
+fieldset {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 1.25rem;
+    padding: 1rem;
+}
+
+legend {
+    font-weight: 600;
+    padding: 0 0.5rem;
+    color: #333;
+}
+
+label {
+    display: inline-block;
+    margin-right: 0.5rem;
+    min-width: 70px;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    padding: 0.375rem 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
+.field-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.field-row label {
+    min-width: auto;
+    flex: 1;
+}
+
+#download {
+    display: inline-block;
+    background: #0066cc;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-right: 0.5rem;
+}
+
+#download:hover {
+    background: #0052a3;
+}
+</style>
+</head>
 <body>
-<div>
-  <strong>Output:</strong>
-  <select id="paper">
-    <option value="a4" selected="selected">A4</option>
-    <option value="a5">A5</option>
-    <option value="letter">US Letter</option>
-    <option value="halfletter">Half Letter</option>
-  </select>
-</div>
-<div>
-  <strong>Units:</strong>
-  <select id="units">
-    <option value="72">inches</option>
-    <option value="2.83465" selected="selected">mm</option>
-  </select>
-</div>
-<div>
-  <strong>Margin</strong>
-  left: <input id="marginL" type="text" maxlength="5" value="16" style="width:30px"/>
-  top: <input id="marginT" type="text" maxlength="5" value="18" style="width:30px"/>
-  right: <input id="marginR" type="text" maxlength="5" value="8" style="width:30px"/>
-  bottom: <input id="marginB" type="text" maxlength="5" value="8" style="width:30px"/>
-</div>
-<div>
-  <strong>Dot</strong>
-    size: <input id="dsize" type="text" maxlength="5" value="0.25" style="width:60px"/>
-    spacing: <input id="dspace" type="text" maxlength="5" value="7" style="width:60px"/>
-    opacity: <input id="dgray" type="number" min="0.1" max="1.0" step="0.1" value="0.5"/>
-</div>
-<div>
-  <strong>Vertical line position (% from right):</strong> <input id="linecol" type="number" min="0" max="100" value="20" style="width:40px"/>%
-</div>
-<div>
-  <strong>Include page number field</strong> <input id="pagenum" type="checkbox" checked="checked"/>
-</div>
-<div>
-<strong>Mirrored second page</strong> <input id="twosided" type="checkbox"/>
+<form id="dotgrid-form">
+    <fieldset>
+        <legend>Paper & Units</legend>
+        <label for="paper">Output:</label>
+        <select id="paper">
+            <option value="a4" selected>A4</option>
+            <option value="a5">A5</option>
+            <option value="letter">US Letter</option>
+            <option value="halfletter">Half Letter</option>
+        </select>
+        <label for="units">Units:</label>
+        <select id="units">
+            <option value="72">inches</option>
+            <option value="2.83465" selected>mm</option>
+        </select>
+        <label for="twosided">Mirrored second page</label>
+        <input id="twosided" type="checkbox"/>
+    </fieldset>
 
-<div>
-<a id="download" download="dotgrid.pdf">Download</a>
-</div>
+    <fieldset>
+        <legend>Margin</legend>
+        <div class="field-row">
+            <label for="marginL">left:</label>
+            <input id="marginL" type="text" value="16"/>
+            <label for="marginT">top:</label>
+            <input id="marginT" type="text" value="18"/>
+        </div>
+        <div class="field-row">
+            <label for="marginR">right:</label>
+            <input id="marginR" type="text" value="8"/>
+            <label for="marginB">bottom:</label>
+            <input id="marginB" type="text" value="8"/>
+        </div>
+    </fieldset>
 
-<div>
-<a href="https://v.cx/2024/10/dotgrid">About</a>
-</div>
+    <fieldset>
+        <legend>Dot Settings</legend>
+        <label for="dsize">size:</label>
+        <input id="dsize" type="text" value="0.25"/>
+        <label for="dspace">spacing:</label>
+        <input id="dspace" type="text" value="7"/>
+        <label for="dgray">opacity:</label>
+        <input id="dgray" type="number" min="0.1" max="1.0" step="0.1" value="0.5"/>
+    </fieldset>
+
+    <fieldset>
+        <legend>Vertical Line</legend>
+        <label for="linecol">Position (%):</label>
+        <input id="linecol" type="number" min="0" max="100" value="20"/>%
+        <label for="pagenum">Include page number</label>
+        <input id="pagenum" type="checkbox" checked/>
+    </fieldset>
+
+    <fieldset>
+        <a id="download" download="dotgrid.pdf">Download PDF</a>
+        <a href="https://v.cx/2024/10/dotgrid">About</a>
+    </fieldset>
+</form>
 
 <script>
 function pdf(mleft, mright, mtop, mbot, width, height, gray, radius, spacing, linecol, pagenum) {
   t = `%PDF-1.2
-1 0 obj
-<<
-/Pages 2 0 R
-/Type /Catalog
->>
-endobj
-2 0 obj
-<<
-/Type /Pages
-/MediaBox [ 0 0 ${width} ${height} ]
-/Kids [3 0 R]
-/Count 1
->>
-endobj
-3 0 obj
-<<
-/Type /Page
-/Parent 2 0 R
-/Contents 4 0 R
->>
-endobj
-4 0 obj << >>
-`
+ 1 0 obj
+ <<
+ /Pages 2 0 R
+ /Type /Catalog
+ >>
+ endobj
+ 2 0 obj
+ <<
+ /Type /Pages
+ /MediaBox [ 0 0 ${width} ${height} ]
+ /Kids [3 0 R]
+ /Count 1
+ >>
+ endobj
+ 3 0 obj
+ <<
+ /Type /Page
+ /Parent 2 0 R
+ /Contents 4 0 R
+ >>
+ endobj
+ 4 0 obj << >>
+ `
   hspace = width - mleft - mright
   hoffset = mleft + (hspace % spacing / 2)
   hdots = Math.trunc(hspace / spacing) + 1
@@ -83,38 +175,38 @@ endobj
 
   t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum_line)
   t += `endobj
-  trailer
-<</Root 1 0 R>>
-%%EOF
- `
+   trailer
+ <</Root 1 0 R>>
+ %%EOF
+  `
   return t
 }
 
 function twoSidedPdf(mleft, mright, mtop, mbot, width, height, gray, radius, spacing, linecol, pagenum) {
   t = `%PDF-1.2
-1 0 obj
-<<
-/Pages 2 0 R
-/Type /Catalog
->>
-endobj
-2 0 obj
-<<
-/Type /Pages
-/MediaBox [ 0 0 ${width} ${height} ]
-/Kids [3 0 R 5 0 R]
-/Count 2
->>
-endobj
-3 0 obj
-<<
-/Type /Page
-/Parent 2 0 R
-/Contents 4 0 R
->>
-endobj
-4 0 obj << >>
-`
+ 1 0 obj
+ <<
+ /Pages 2 0 R
+ /Type /Catalog
+ >>
+ endobj
+ 2 0 obj
+ <<
+ /Type /Pages
+ /MediaBox [ 0 0 ${width} ${height} ]
+ /Kids [3 0 R 5 0 R]
+ /Count 2
+ >>
+ endobj
+ 3 0 obj
+ <<
+ /Type /Page
+ /Parent 2 0 R
+ /Contents 4 0 R
+ >>
+ endobj
+ 4 0 obj << >>
+ `
   hspace = width - mleft - mright
   hoffset = mleft + (hspace % spacing / 2)
   hdots = Math.trunc(hspace / spacing) + 1
@@ -126,37 +218,37 @@ endobj
 
   t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum_line)
   t += `endobj
- 5 0 obj
-<<
-/Type /Page
-/Parent 2 0 R
-/Contents 6 0 R
->>
-endobj
-6 0 obj << >>
- `
+  5 0 obj
+ <<
+ /Type /Page
+ /Parent 2 0 R
+ /Contents 6 0 R
+ >>
+ endobj
+ 6 0 obj << >>
+  `
   hoffset = mright + (hspace % spacing / 2)
   t += dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum_line)
   t += `endobj
-  trailer
-<</Root 1 0 R>>
-%%EOF
- `
+   trailer
+ <</Root 1 0 R>>
+ %%EOF
+  `
   return t
 }
 
 function dotStream(gray, radius, spacing, hoffset, voffset, hdots, vdots, width, height, linecol, pagenum_line) {
   t = `stream
-q
-${gray} g
-`
+ q
+ ${gray} g
+ `
   unitcircle = `1 0 m
-1 0.55228475 0.55228475 1 0 1 c
--0.55228475 1 -1 0.55228475 -1 0 c
--1 -0.55228475 -0.55228475 -1 0 -1 c
-0.55228475 -1 1 -0.55228475 1 0 c
-f
-`
+ 1 0.55228475 0.55228475 1 0 1 c
+ -0.55228475 1 -1 0.55228475 -1 0 c
+ -1 -0.55228475 -0.55228475 -1 0 -1 c
+ 0.55228475 -1 1 -0.55228475 1 0 c
+ f
+ `
   rStr = radius.toString()
   for (let x = 0; x < hdots; ++x) {
     for (let y = 0; y < vdots; ++y) {
@@ -181,13 +273,12 @@ f
     t += lineX + " " + lineY + " " + lineWidth + " " + lineHeight + " re f\n"
   }
   t += `Q
- endstream
- `
+  endstream
+  `
   return t
 }
 
 function pagenumLine(pagenum, width, height, mtop, spacing, radius) {
-  // These values are hardcoded but could, in theory, be available on the UI.
   lineWidth = 50
   lineHeight = radius * 2
   lineX = width - lineWidth - spacing
