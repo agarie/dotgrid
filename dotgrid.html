@@ -51,18 +51,6 @@ input[type="checkbox"] {
     margin-right: 0.5rem;
 }
 
-.field-row {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    margin-bottom: 0.5rem;
-}
-
-.field-row label {
-    min-width: auto;
-    flex: 1;
-}
-
 #download {
     display: inline-block;
     background: #0066cc;
@@ -88,38 +76,34 @@ input[type="checkbox"] {
             <option value="a5">A5</option>
             <option value="letter">US Letter</option>
             <option value="halfletter">Half Letter</option>
-        </select>
+        </select> <br>
         <label for="units">Units:</label>
         <select id="units">
             <option value="72">inches</option>
             <option value="2.83465" selected>mm</option>
-        </select>
+        </select> <br>
         <label for="twosided">Mirrored second page</label>
         <input id="twosided" type="checkbox"/>
     </fieldset>
 
     <fieldset>
         <legend>Margin</legend>
-        <div class="field-row">
-            <label for="marginL">left:</label>
-            <input id="marginL" type="text" value="16"/>
-            <label for="marginT">top:</label>
-            <input id="marginT" type="text" value="18"/>
-        </div>
-        <div class="field-row">
-            <label for="marginR">right:</label>
-            <input id="marginR" type="text" value="8"/>
-            <label for="marginB">bottom:</label>
-            <input id="marginB" type="text" value="8"/>
-        </div>
+        <label for="marginL">left:</label>
+        <input id="marginL" type="text" value="16"/> <br>
+        <label for="marginT">top:</label>
+        <input id="marginT" type="text" value="18"/> <br>
+        <label for="marginR">right:</label>
+        <input id="marginR" type="text" value="8"/> <br>
+        <label for="marginB">bottom:</label>
+        <input id="marginB" type="text" value="8"/>
     </fieldset>
 
     <fieldset>
         <legend>Dot Settings</legend>
         <label for="dsize">size:</label>
-        <input id="dsize" type="text" value="0.25"/>
+        <input id="dsize" type="text" value="0.25"/> <br>
         <label for="dspace">spacing:</label>
-        <input id="dspace" type="text" value="7"/>
+        <input id="dspace" type="text" value="7"/> <br>
         <label for="dgray">opacity:</label>
         <input id="dgray" type="number" min="0.1" max="1.0" step="0.1" value="0.5"/>
     </fieldset>
@@ -127,9 +111,9 @@ input[type="checkbox"] {
     <fieldset>
         <legend>Vertical Line</legend>
         <label for="linecol">Position (%):</label>
-        <input id="linecol" type="number" min="0" max="100" value="20"/>%
+        <input id="linecol" type="number" min="0" max="100" value="0"/> <br>
         <label for="pagenum">Include page number</label>
-        <input id="pagenum" type="checkbox" checked/>
+        <input id="pagenum" type="checkbox"/>
     </fieldset>
 
     <fieldset>
